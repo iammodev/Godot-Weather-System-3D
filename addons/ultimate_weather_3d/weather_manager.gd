@@ -10,6 +10,13 @@ signal transition_finished()
 var _state_machine: WeatherStateMachine = WeatherStateMachine.new()
 var _shader_globals_initialized: bool = false
 
+# Public cache for performance-sensitive scripts
+# These variables prevent the need to query RenderingServer at runtime
+var current_wetness_level: float = 0.0
+var current_wind_direction: Vector3 = Vector3.ZERO
+var current_wind_strength: float = 0.0
+var current_snow_height: float = 0.0
+
 ## Current active preset (read-only via getter)
 var current_weather: WeatherPreset:
 	get: return _state_machine.current_preset
@@ -106,6 +113,13 @@ func _update_interpolated_globals() -> void:
 		current.wind_strength, target.wind_strength
 	)
 	
+	# CACHE LOCALLY
+	current_wetness_level = wetness
+	current_wind_direction = wind_dir
+	current_wind_strength = wind_str
+	current_snow_height = snow
+	
+	# SEND TO GPU
 	RenderingServer.global_shader_parameter_set(WeatherTypes.SHADER_WETNESS, wetness)
 	RenderingServer.global_shader_parameter_set(WeatherTypes.SHADER_SNOW, snow)
 	RenderingServer.global_shader_parameter_set(WeatherTypes.SHADER_WIND_DIR, wind_dir)
@@ -114,6 +128,13 @@ func _update_interpolated_globals() -> void:
 
 func _apply_globals(preset: WeatherPreset) -> void:
 	"""Apply preset values to shader globals (non-interpolated)"""
+	# CACHE LOCALLY
+	current_wetness_level = preset.wetness_level
+	current_wind_direction = preset.wind_direction
+	current_wind_strength = preset.wind_strength
+	current_snow_height = preset.snow_coverage
+	
+	# SEND TO GPU
 	RenderingServer.global_shader_parameter_set(WeatherTypes.SHADER_WETNESS, preset.wetness_level)
 	RenderingServer.global_shader_parameter_set(WeatherTypes.SHADER_SNOW, preset.snow_coverage)
 	RenderingServer.global_shader_parameter_set(WeatherTypes.SHADER_WIND_DIR, preset.wind_direction)

@@ -16,6 +16,7 @@ func _ready() -> void:
 	preset_clear.sun_energy = 1.2
 	preset_clear.ambient_energy = 0.5
 	preset_clear.fog_density = 0.0
+	preset_clear.ambient_sound = null
 	
 	# 2. Setup Storm Weather
 	preset_storm = WeatherPreset.new()
@@ -27,6 +28,8 @@ func _ready() -> void:
 	preset_storm.ambient_energy = 0.1
 	preset_storm.fog_density = 0.05       
 	preset_storm.fog_albedo = Color("2d2d2d")
+	preset_storm.ambient_sound = load("uid://bwb2772chawtg")
+	preset_storm.lightning_enabled = true
 
 	# 3. Setup Rain Weather
 	preset_rain = WeatherPreset.new()
@@ -50,6 +53,7 @@ func _ready() -> void:
 	preset_snow.ambient_energy = 0.6
 	preset_snow.fog_density = 0.04
 	preset_snow.fog_albedo = Color("b0bace")
+	preset_snow.ambient_sound = load("uid://dppfqmbhpdu6b")
 
 
 	# 4. Connect Buttons

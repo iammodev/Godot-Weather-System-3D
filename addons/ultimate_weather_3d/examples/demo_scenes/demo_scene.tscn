@@ -6,6 +6,10 @@
 [ext_resource type="Script" uid="uid://derya8amry4rt" path="res://addons/ultimate_weather_3d/examples/create_test_env.gd" id="4_pgar2"]
 [ext_resource type="Script" uid="uid://ctynsy5cryieh" path="res://addons/ultimate_weather_3d/systems/audio/weather_audio.gd" id="5_ha67f"]
 [ext_resource type="Script" uid="uid://keasiiwtcb4n" path="res://addons/ultimate_weather_3d/systems/day_night/day_night_cycle.gd" id="6_jo5he"]
+[ext_resource type="Script" uid="uid://8nenlsnbvi2x" path="res://addons/ultimate_weather_3d/systems/interactions/weather_listener.gd" id="7_u2eh3"]
+[ext_resource type="PackedScene" uid="uid://bliupg0h1po30" path="res://addons/ultimate_weather_3d/systems/interactions/wet_decal.tscn" id="8_majs8"]
+[ext_resource type="Script" uid="uid://umt5wu8hpv7v" path="res://addons/ultimate_weather_3d/systems/environment/lightning_generator.gd" id="9_yhpvw"]
+[ext_resource type="AudioStream" uid="uid://b6tyhgnujfbwy" path="res://addons/ultimate_weather_3d/systems/audio/assets/thunder.ogg" id="10_wi60m"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_b4qg2"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -20,18 +24,68 @@ sky = SubResource("Sky_wx682")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_jo5he"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_u2eh3"]
+
 [node name="Node3D" type="Node3D" unique_id=2115470752]
 
-[node name="WeatherEnvironmentController" type="Node" parent="." unique_id=1582725352 node_paths=PackedStringArray("world_environment", "sun_light")]
+[node name="EnvironmentGenerator" type="Node3D" parent="." unique_id=472211247]
+script = ExtResource("4_pgar2")
+
+[node name="WeatherSystem" type="Node3D" parent="." unique_id=1585581140]
+
+[node name="DayNightCycle" type="Node" parent="WeatherSystem" unique_id=489395121 node_paths=PackedStringArray("sun_light")]
+script = ExtResource("6_jo5he")
+sun_light = NodePath("../WeatherEnvironmentController/DirectionalLight3D")
+metadata/_custom_type_script = "uid://keasiiwtcb4n"
+
+[node name="WeatherEnvironmentController" type="Node" parent="WeatherSystem" unique_id=1582725352 node_paths=PackedStringArray("world_environment", "sun_light")]
 script = ExtResource("1_57e6a")
 world_environment = NodePath("WorldEnvironment")
 sun_light = NodePath("DirectionalLight3D")
 metadata/_custom_type_script = "uid://ctmfkjk0nwclb"
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WeatherEnvironmentController" unique_id=905735885]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WeatherSystem/WeatherEnvironmentController" unique_id=905735885]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="WeatherEnvironmentController" unique_id=278346066]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="WeatherSystem/WeatherEnvironmentController" unique_id=278346066]
 environment = SubResource("Environment_pgar2")
+
+[node name="WeatherParticleController" parent="WeatherSystem" unique_id=1398429238 node_paths=PackedStringArray("target_camera") instance=ExtResource("3_wx682")]
+target_camera = NodePath("../../Camera3D")
+
+[node name="WeatherAudioManager" type="Node" parent="WeatherSystem" unique_id=1927020291]
+script = ExtResource("5_ha67f")
+metadata/_custom_type_script = "uid://ctynsy5cryieh"
+
+[node name="LightningSystem" type="Node3D" parent="WeatherSystem" unique_id=1444605137 node_paths=PackedStringArray("target_camera", "thunder_sound")]
+script = ExtResource("9_yhpvw")
+target_camera = NodePath("../../Camera3D")
+thunder_sound = NodePath("AudioStreamPlayer")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="WeatherSystem/LightningSystem" unique_id=1634213647]
+stream = ExtResource("10_wi60m")
+
+[node name="InteractiveObjects" type="Node3D" parent="." unique_id=1551820909]
+
+[node name="PuddleDecal" parent="InteractiveObjects" unique_id=1656443397 instance=ExtResource("8_majs8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9749458, 1, 1.841294)
+
+[node name="PhysicsCrate" type="RigidBody3D" parent="InteractiveObjects" unique_id=1019913568]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.298533, -7.0350447)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractiveObjects/PhysicsCrate" unique_id=1469708813]
+shape = SubResource("BoxShape3D_jo5he")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="InteractiveObjects/PhysicsCrate" unique_id=1985311474]
+mesh = SubResource("BoxMesh_u2eh3")
+
+[node name="WeatherListener" type="Node3D" parent="InteractiveObjects/PhysicsCrate" unique_id=1197255468]
+script = ExtResource("7_u2eh3")
+metadata/_custom_type_script = "uid://8nenlsnbvi2x"
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=256482146]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.7342377, 12.671673)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1732737848]
 
@@ -73,22 +127,3 @@ text = "ButtonRain"
 [node name="ButtonSnow" type="Button" parent="CanvasLayer/Control/VBoxContainer" unique_id=1927991408]
 layout_mode = 2
 text = "ButtonSnow"
-
-[node name="WeatherParticleController" parent="." unique_id=1398429238 node_paths=PackedStringArray("target_camera") instance=ExtResource("3_wx682")]
-target_camera = NodePath("../Camera3D")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=256482146]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.7342377, 12.671673)
-
-[node name="EnvironmentGenerator" type="Node3D" parent="." unique_id=472211247]
-script = ExtResource("4_pgar2")
-
-[node name="WeatherAudioManager" type="Node" parent="." unique_id=1927020291]
-script = ExtResource("5_ha67f")
-metadata/_custom_type_script = "uid://ctynsy5cryieh"
-
-[node name="DayNightCycle" type="Node" parent="." unique_id=489395121 node_paths=PackedStringArray("sun_light")]
-script = ExtResource("6_jo5he")
-sun_light = NodePath("../WeatherEnvironmentController/DirectionalLight3D")
-day_length = 10.0
-metadata/_custom_type_script = "uid://keasiiwtcb4n"

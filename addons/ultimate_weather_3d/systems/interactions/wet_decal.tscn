@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bliupg0h1po30"]
+
+[ext_resource type="Script" uid="uid://dq6ywisc12r5o" path="res://addons/ultimate_weather_3d/systems/interactions/puddle_manager.gd" id="1_rhinm"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_h8oeg"]
+frequency = 0.02
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rhinm"]
+noise = SubResource("FastNoiseLite_h8oeg")
+seamless = true
+
+[node name="WetDecal" type="Decal" unique_id=1656443397]
+size = Vector3(15, 15, 15)
+texture_albedo = SubResource("NoiseTexture2D_rhinm")
+script = ExtResource("1_rhinm")
