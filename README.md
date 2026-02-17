@@ -35,3 +35,5 @@ A high-performance, modular weather system designed for 3D games.
 
 - Godot 4.6+
 - Forward+ Renderer (recommended for Volumetric Fog)
+
+<img width="833" height="467" alt="image" src="https://github.com/user-attachments/assets/74f1366a-f863-47c2-a8fd-aa723ec43bf9" />
