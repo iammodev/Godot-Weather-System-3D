@@ -1,0 +1,94 @@
+[gd_scene format=3 uid="uid://dgxk1c7t2r8np"]
+
+[ext_resource type="Script" uid="uid://ctmfkjk0nwclb" path="res://addons/ultimate_weather_3d/systems/environment/weather_environment.gd" id="1_57e6a"]
+[ext_resource type="Script" uid="uid://de4obbty7yub7" path="res://addons/ultimate_weather_3d/examples/demo_scenes/debug_weather_ui.gd" id="2_b4qg2"]
+[ext_resource type="PackedScene" uid="uid://caeke01kdjv6t" path="res://addons/ultimate_weather_3d/systems/particles/weather_particles.tscn" id="3_wx682"]
+[ext_resource type="Script" uid="uid://derya8amry4rt" path="res://addons/ultimate_weather_3d/examples/create_test_env.gd" id="4_pgar2"]
+[ext_resource type="Script" uid="uid://ctynsy5cryieh" path="res://addons/ultimate_weather_3d/systems/audio/weather_audio.gd" id="5_ha67f"]
+[ext_resource type="Script" uid="uid://keasiiwtcb4n" path="res://addons/ultimate_weather_3d/systems/day_night/day_night_cycle.gd" id="6_jo5he"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_b4qg2"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_wx682"]
+sky_material = SubResource("ProceduralSkyMaterial_b4qg2")
+
+[sub_resource type="Environment" id="Environment_pgar2"]
+background_mode = 2
+sky = SubResource("Sky_wx682")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Node3D" type="Node3D" unique_id=2115470752]
+
+[node name="WeatherEnvironmentController" type="Node" parent="." unique_id=1582725352 node_paths=PackedStringArray("world_environment", "sun_light")]
+script = ExtResource("1_57e6a")
+world_environment = NodePath("WorldEnvironment")
+sun_light = NodePath("DirectionalLight3D")
+metadata/_custom_type_script = "uid://ctmfkjk0nwclb"
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WeatherEnvironmentController" unique_id=905735885]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="WeatherEnvironmentController" unique_id=278346066]
+environment = SubResource("Environment_pgar2")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1732737848]
+
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=420307097]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control" unique_id=271592556]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_b4qg2")
+
+[node name="ButtonClear" type="Button" parent="CanvasLayer/Control/VBoxContainer" unique_id=289283861]
+layout_mode = 2
+text = "ButtonClear"
+
+[node name="ButtonStorm" type="Button" parent="CanvasLayer/Control/VBoxContainer" unique_id=108811290]
+layout_mode = 2
+text = "ButtonStorm"
+
+[node name="ButtonRain" type="Button" parent="CanvasLayer/Control/VBoxContainer" unique_id=877883733]
+layout_mode = 2
+text = "ButtonRain"
+
+[node name="ButtonSnow" type="Button" parent="CanvasLayer/Control/VBoxContainer" unique_id=1927991408]
+layout_mode = 2
+text = "ButtonSnow"
+
+[node name="WeatherParticleController" parent="." unique_id=1398429238 node_paths=PackedStringArray("target_camera") instance=ExtResource("3_wx682")]
+target_camera = NodePath("../Camera3D")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=256482146]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.7342377, 12.671673)
+
+[node name="EnvironmentGenerator" type="Node3D" parent="." unique_id=472211247]
+script = ExtResource("4_pgar2")
+
+[node name="WeatherAudioManager" type="Node" parent="." unique_id=1927020291]
+script = ExtResource("5_ha67f")
+metadata/_custom_type_script = "uid://ctynsy5cryieh"
+
+[node name="DayNightCycle" type="Node" parent="." unique_id=489395121 node_paths=PackedStringArray("sun_light")]
+script = ExtResource("6_jo5he")
+sun_light = NodePath("../WeatherEnvironmentController/DirectionalLight3D")
+day_length = 10.0
+metadata/_custom_type_script = "uid://keasiiwtcb4n"

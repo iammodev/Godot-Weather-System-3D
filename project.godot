@@ -11,8 +11,17 @@ config_version=5
 [application]
 
 config/name="Ultimate Weather 3D"
+run/main_scene="uid://dgxk1c7t2r8np"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+WeatherManager="*uid://etaai56x38ja"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/ultimate_weather_3d/plugin.cfg")
 
 [physics]
 
@@ -21,3 +30,22 @@ config/icon="res://icon.svg"
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+
+[shader_globals]
+
+weather_wetness_level={
+"type": "float",
+"value": 0.0
+}
+weather_snow_height={
+"type": "float",
+"value": 0.0
+}
+weather_wind_direction={
+"type": "vec3",
+"value": Vector3(1, 0, 0)
+}
+weather_wind_strength={
+"type": "float",
+"value": 0.0
+}

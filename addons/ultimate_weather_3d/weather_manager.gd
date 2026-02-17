@@ -53,6 +53,19 @@ func set_weather(preset: WeatherPreset, transition_duration: float = 2.0) -> voi
 	_state_machine.change_weather(preset, transition_duration)
 
 
+## Returns the destination preset during a transition, or null if stable
+func get_target_weather() -> WeatherPreset:
+	return _state_machine.target_preset
+
+## Returns the current transition progress (0.0 to 1.0)
+func get_transition_progress() -> float:
+	return _state_machine.transition_progress
+
+## Returns true if a transition is active
+func is_transitioning() -> bool:
+	return _state_machine.is_transitioning
+
+
 func set_weather_instant(preset: WeatherPreset) -> void:
 	"""Instantly switch weather (no transition)"""
 	set_weather(preset, 0.0)
