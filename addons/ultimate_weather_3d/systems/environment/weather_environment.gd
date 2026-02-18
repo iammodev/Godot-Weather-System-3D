@@ -18,6 +18,10 @@ func _ready() -> void:
 		# Duplicate to avoid modifying the original resource on disk
 		world_environment.environment = world_environment.environment.duplicate()
 		_default_env = world_environment.environment
+		
+		# Duplicate Sky material as well if it exists so we don't edit project files
+		if _default_env.sky and _default_env.sky.sky_material:
+			_default_env.sky.sky_material = _default_env.sky.sky_material.duplicate()
 	else:
 		push_warning("WeatherEnvironmentController: No WorldEnvironment assigned!")
 		set_process(false)
@@ -42,21 +46,14 @@ func _interpolate_environment(from: WeatherPreset, to: WeatherPreset, t: float) 
 	var env = world_environment.environment
 	
 	# 1. Sky & Ambient
-	# Note: Actual Sky texture blending is complex; we interpolate colors here.
-	# For procedural sky, you'd access env.sky.sky_material.
-	if env.sky and env.sky.sky_material is ProceduralSkyMaterial:
-		var mat = env.sky.sky_material as ProceduralSkyMaterial
-		mat.sky_top_color = from.sky_color.lerp(to.sky_color, t)
-		mat.sky_horizon_color = from.horizon_color.lerp(to.horizon_color, t)
-		mat.ground_horizon_color = from.horizon_color.lerp(to.horizon_color, t)
+	if env.sky and env.sky.sky_material:
+		_update_sky_material(env.sky.sky_material, from, to, t)
 	
 	env.ambient_light_energy = lerpf(from.ambient_energy, to.ambient_energy, t)
-	env.ambient_light_color = from.sky_color.lerp(to.sky_color, t) # Simple approximation
+	# Simple approximation for ambient color if not using Sky mode
+	env.ambient_light_color = from.sky_color.lerp(to.sky_color, t) 
 	
 	# 2. Volumetric Fog
-	# Optimization: If density is near 0, disable it? 
-	# Godot 4 Volumetric Fog is expensive.
-	
 	env.volumetric_fog_density = lerpf(from.fog_density, to.fog_density, t)
 	env.volumetric_fog_albedo = from.fog_albedo.lerp(to.fog_albedo, t)
 	env.volumetric_fog_emission = from.fog_albedo * lerpf(from.fog_emission_energy, to.fog_emission_energy, t)
@@ -64,16 +61,12 @@ func _interpolate_environment(from: WeatherPreset, to: WeatherPreset, t: float) 
 	# 3. Sun (if assigned)
 	if sun_light:
 		sun_light.light_energy = lerpf(from.sun_energy, to.sun_energy, t)
-		# We don't rotate sun here; that's for Day/Night system
 
 func _apply_instant(preset: WeatherPreset) -> void:
 	var env = world_environment.environment
 	
-	if env.sky and env.sky.sky_material is ProceduralSkyMaterial:
-		var mat = env.sky.sky_material as ProceduralSkyMaterial
-		mat.sky_top_color = preset.sky_color
-		mat.sky_horizon_color = preset.horizon_color
-		mat.ground_horizon_color = preset.horizon_color
+	if env.sky and env.sky.sky_material:
+		_update_sky_material_instant(env.sky.sky_material, preset)
 		
 	env.ambient_light_energy = preset.ambient_energy
 	env.ambient_light_color = preset.sky_color
@@ -84,3 +77,38 @@ func _apply_instant(preset: WeatherPreset) -> void:
 	
 	if sun_light:
 		sun_light.light_energy = preset.sun_energy
+
+# --- Helper Functions for Different Sky Types ---
+
+func _update_sky_material(mat: Material, from: WeatherPreset, to: WeatherPreset, t: float) -> void:
+	if mat is ProceduralSkyMaterial:
+		mat.sky_top_color = from.sky_color.lerp(to.sky_color, t)
+		mat.sky_horizon_color = from.horizon_color.lerp(to.horizon_color, t)
+		mat.ground_horizon_color = from.horizon_color.lerp(to.horizon_color, t)
+		
+	elif mat is ShaderMaterial:
+		# Custom Dynamic Cloud Shader
+		mat.set_shader_parameter("sky_top_color", from.sky_color.lerp(to.sky_color, t))
+		mat.set_shader_parameter("sky_horizon_color", from.horizon_color.lerp(to.horizon_color, t))
+		
+		# Map Fog Density to Cloud Coverage (0.0 fog = 0.0 cloud, 0.1 fog = 1.0 cloud)
+		# This is a heuristic; you could add a dedicated 'cloud_cover' var to WeatherPreset later.
+		var cover_from = clamp(from.fog_density * 20.0, 0.0, 1.0)
+		var cover_to = clamp(to.fog_density * 20.0, 0.0, 1.0)
+		
+		mat.set_shader_parameter("cloud_coverage", lerpf(cover_from, cover_to, t))
+		mat.set_shader_parameter("cloud_color", from.fog_albedo.lerp(to.fog_albedo, t))
+
+func _update_sky_material_instant(mat: Material, preset: WeatherPreset) -> void:
+	if mat is ProceduralSkyMaterial:
+		mat.sky_top_color = preset.sky_color
+		mat.sky_horizon_color = preset.horizon_color
+		mat.ground_horizon_color = preset.horizon_color
+		
+	elif mat is ShaderMaterial:
+		mat.set_shader_parameter("sky_top_color", preset.sky_color)
+		mat.set_shader_parameter("sky_horizon_color", preset.horizon_color)
+		
+		var cover = clamp(preset.fog_density * 20.0, 0.0, 1.0)
+		mat.set_shader_parameter("cloud_coverage", cover)
+		mat.set_shader_parameter("cloud_color", preset.fog_albedo)

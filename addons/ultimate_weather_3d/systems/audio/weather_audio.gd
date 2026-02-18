@@ -14,7 +14,7 @@ var _target_volume: float = 0.0
 func _ready() -> void:
 	# Create internal player
 	_ambient_player = AudioStreamPlayer.new()
-	_ambient_player.bus = "Weather" # Or "Weather" if you have one
+	_ambient_player.bus = "Weather"
 	_ambient_player.name = "AmbientLoop"
 	add_child(_ambient_player)
 	

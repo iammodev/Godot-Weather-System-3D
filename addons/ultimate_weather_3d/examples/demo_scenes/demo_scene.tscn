@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://de4obbty7yub7" path="res://addons/ultimate_weather_3d/examples/demo_scenes/debug_weather_ui.gd" id="2_b4qg2"]
 [ext_resource type="PackedScene" uid="uid://caeke01kdjv6t" path="res://addons/ultimate_weather_3d/systems/particles/weather_particles.tscn" id="3_wx682"]
 [ext_resource type="Script" uid="uid://derya8amry4rt" path="res://addons/ultimate_weather_3d/examples/create_test_env.gd" id="4_pgar2"]
+[ext_resource type="Shader" uid="uid://cftve8oa738jp" path="res://addons/ultimate_weather_3d/shaders/dynamic_clouds.gdshader" id="4_wi60m"]
 [ext_resource type="Script" uid="uid://ctynsy5cryieh" path="res://addons/ultimate_weather_3d/systems/audio/weather_audio.gd" id="5_ha67f"]
 [ext_resource type="Script" uid="uid://keasiiwtcb4n" path="res://addons/ultimate_weather_3d/systems/day_night/day_night_cycle.gd" id="6_jo5he"]
 [ext_resource type="Script" uid="uid://8nenlsnbvi2x" path="res://addons/ultimate_weather_3d/systems/interactions/weather_listener.gd" id="7_u2eh3"]
@@ -11,16 +12,21 @@
 [ext_resource type="Script" uid="uid://umt5wu8hpv7v" path="res://addons/ultimate_weather_3d/systems/environment/lightning_generator.gd" id="9_yhpvw"]
 [ext_resource type="AudioStream" uid="uid://b6tyhgnujfbwy" path="res://addons/ultimate_weather_3d/systems/audio/assets/thunder.ogg" id="10_wi60m"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_b4qg2"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3th4k"]
+shader = ExtResource("4_wi60m")
+shader_parameter/sky_top_color = Color(0.35, 0.6, 1, 1)
+shader_parameter/sky_horizon_color = Color(0.7, 0.8, 0.9, 1)
+shader_parameter/cloud_color = Color(1, 1, 1, 1)
+shader_parameter/cloud_coverage = 0.5
+shader_parameter/cloud_softness = 0.5
+shader_parameter/time_scale = 0.01
 
-[sub_resource type="Sky" id="Sky_wx682"]
-sky_material = SubResource("ProceduralSkyMaterial_b4qg2")
+[sub_resource type="Sky" id="Sky_t0qt4"]
+sky_material = SubResource("ShaderMaterial_3th4k")
 
 [sub_resource type="Environment" id="Environment_pgar2"]
 background_mode = 2
-sky = SubResource("Sky_wx682")
+sky = SubResource("Sky_t0qt4")
 tonemap_mode = 2
 glow_enabled = true
 
@@ -91,11 +97,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.7342377, 12.671673)
 
 [node name="Control" type="Control" parent="CanvasLayer" unique_id=420307097]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 118.0
+offset_bottom = 155.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control" unique_id=271592556]
 layout_mode = 1
