@@ -23,6 +23,13 @@ WeatherManager="*uid://etaai56x38ja"
 
 enabled=PackedStringArray("res://addons/ultimate_weather_3d/plugin.cfg")
 
+[layer_names]
+
+3d_render/layer_1="World"
+3d_render/layer_2="SnowBlocker"
+3d_physics/layer_1="Terrain"
+3d_physics/layer_2="Objects"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
@@ -48,4 +55,16 @@ weather_wind_direction={
 weather_wind_strength={
 "type": "float",
 "value": 0.0
+}
+snow_mask_tex={
+"type": "sampler2D",
+"value": ""
+}
+snow_proj_pos={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}
+snow_proj_size={
+"type": "float",
+"value": 50.0
 }

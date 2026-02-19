@@ -2,15 +2,253 @@
 
 [ext_resource type="Script" uid="uid://ctmfkjk0nwclb" path="res://addons/ultimate_weather_3d/systems/environment/weather_environment.gd" id="1_57e6a"]
 [ext_resource type="Script" uid="uid://de4obbty7yub7" path="res://addons/ultimate_weather_3d/examples/demo_scenes/debug_weather_ui.gd" id="2_b4qg2"]
+[ext_resource type="Shader" uid="uid://dtc6hvlqo0r65" path="res://addons/ultimate_weather_3d/shaders/weather_surface_shader.gdshader" id="2_t0qt4"]
 [ext_resource type="PackedScene" uid="uid://caeke01kdjv6t" path="res://addons/ultimate_weather_3d/systems/particles/weather_particles.tscn" id="3_wx682"]
 [ext_resource type="Script" uid="uid://derya8amry4rt" path="res://addons/ultimate_weather_3d/examples/create_test_env.gd" id="4_pgar2"]
 [ext_resource type="Shader" uid="uid://cftve8oa738jp" path="res://addons/ultimate_weather_3d/shaders/dynamic_clouds.gdshader" id="4_wi60m"]
 [ext_resource type="Script" uid="uid://ctynsy5cryieh" path="res://addons/ultimate_weather_3d/systems/audio/weather_audio.gd" id="5_ha67f"]
 [ext_resource type="Script" uid="uid://keasiiwtcb4n" path="res://addons/ultimate_weather_3d/systems/day_night/day_night_cycle.gd" id="6_jo5he"]
 [ext_resource type="Script" uid="uid://8nenlsnbvi2x" path="res://addons/ultimate_weather_3d/systems/interactions/weather_listener.gd" id="7_u2eh3"]
-[ext_resource type="PackedScene" uid="uid://bliupg0h1po30" path="res://addons/ultimate_weather_3d/systems/interactions/wet_decal.tscn" id="8_majs8"]
 [ext_resource type="Script" uid="uid://umt5wu8hpv7v" path="res://addons/ultimate_weather_3d/systems/environment/lightning_generator.gd" id="9_yhpvw"]
 [ext_resource type="AudioStream" uid="uid://b6tyhgnujfbwy" path="res://addons/ultimate_weather_3d/systems/audio/assets/thunder.ogg" id="10_wi60m"]
+[ext_resource type="PackedScene" uid="uid://bvvlu61mhusbg" path="res://addons/ultimate_weather_3d/systems/environment/snow_mapper.tscn" id="12_3th4k"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ig8xt"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.2, 0.25, 0.2, 1)
+shader_parameter/roughness = 0.8
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_k612p"]
+size = Vector2(100, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t0qt4"]
+size = Vector3(100, 2.189682, 100)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2wy3r"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.6, 0.4, 0.3, 1)
+shader_parameter/roughness = 0.8
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_gjtsr"]
+size = Vector3(10, 4, 10)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_tr1nl"]
+data = PackedVector3Array(-5, 2, 5, 5, 2, 5, -5, -2, 5, 5, 2, 5, 5, -2, 5, -5, -2, 5, 5, 2, -5, -5, 2, -5, 5, -2, -5, -5, 2, -5, -5, -2, -5, 5, -2, -5, 5, 2, 5, 5, 2, -5, 5, -2, 5, 5, 2, -5, 5, -2, -5, 5, -2, 5, -5, 2, -5, -5, 2, 5, -5, -2, -5, -5, 2, 5, -5, -2, 5, -5, -2, -5, 5, 2, 5, -5, 2, 5, 5, 2, -5, -5, 2, 5, -5, 2, -5, 5, 2, -5, -5, -2, 5, 5, -2, 5, -5, -2, -5, 5, -2, 5, 5, -2, -5, -5, -2, -5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ck8fj"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.8, 0.2, 0.2, 1)
+shader_parameter/roughness = 0.6
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="PrismMesh" id="PrismMesh_may0r"]
+size = Vector3(12, 3, 12)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_m1i6t"]
+data = PackedVector3Array(0, 1.5, 6, 6, -1.5, 6, -6, -1.5, 6, 0, 1.5, -6, -6, -1.5, -6, 6, -1.5, -6, 0, 1.5, 6, 0, 1.5, -6, 6, -1.5, 6, 0, 1.5, -6, 6, -1.5, -6, 6, -1.5, 6, 0, 1.5, -6, 0, 1.5, 6, -6, -1.5, -6, 0, 1.5, 6, -6, -1.5, 6, -6, -1.5, -6, -6, -1.5, 6, 6, -1.5, 6, -6, -1.5, -6, 6, -1.5, 6, 6, -1.5, -6, -6, -1.5, -6)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kef2h"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.9995386, 0.8801577, 0.066241354, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_c6kpy"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_6pmkk"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7dbxf"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.6448066, 0.7581132, 0.4608201, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_qoemy"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_bn3mk"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_66xxb"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.5932376, 0.13182983, 0.9784455, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_pedin"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_dukhw"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pvuku"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.21249822, 0.56511194, 0.68032616, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_jwstm"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_nu74k"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qshkc"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.58912915, 0.070249245, 0.78343767, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_x8rv7"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_775ty"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3nn3u"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.30143204, 0.30780783, 0.5726098, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_sxwn4"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_bdhhl"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wvrs4"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.155067, 0.73899716, 0.9796044, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_8i5a5"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_582a1"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qtv4r"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.44778073, 0.15107964, 0.48667777, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_drdrk"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_e83ov"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jnocu"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.44442105, 0.95625776, 0.881747, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_xrgsh"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_e0swk"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cljr8"]
+render_priority = 0
+shader = ExtResource("2_t0qt4")
+shader_parameter/base_color = Color(0.20761582, 0.5576225, 0.7101081, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/snow_albedo = Color(0.9, 0.95, 1, 1)
+shader_parameter/snow_roughness = 0.9
+shader_parameter/snow_texture_scale = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_1w1f8"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_hrivt"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3th4k"]
 shader = ExtResource("4_wi60m")
@@ -39,6 +277,151 @@ glow_enabled = true
 [node name="EnvironmentGenerator" type="Node3D" parent="." unique_id=472211247]
 script = ExtResource("4_pgar2")
 
+[node name="Floor" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=1121082452]
+material_override = SubResource("ShaderMaterial_ig8xt")
+mesh = SubResource("PlaneMesh_k612p")
+
+[node name="Floor_col" type="StaticBody3D" parent="EnvironmentGenerator/Floor" unique_id=146482541]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Floor/Floor_col" unique_id=1239362236]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41262054, 0)
+shape = SubResource("BoxShape3D_t0qt4")
+
+[node name="TestHouse" type="Node3D" parent="EnvironmentGenerator" unique_id=207261414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+
+[node name="Walls" type="MeshInstance3D" parent="EnvironmentGenerator/TestHouse" unique_id=2034866474]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+layers = 3
+material_override = SubResource("ShaderMaterial_2wy3r")
+mesh = SubResource("BoxMesh_gjtsr")
+
+[node name="Walls_col" type="StaticBody3D" parent="EnvironmentGenerator/TestHouse/Walls" unique_id=1030603634]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/TestHouse/Walls/Walls_col" unique_id=1385363228]
+shape = SubResource("ConcavePolygonShape3D_tr1nl")
+
+[node name="Roof" type="MeshInstance3D" parent="EnvironmentGenerator/TestHouse" unique_id=1449366929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 0)
+layers = 3
+material_override = SubResource("ShaderMaterial_ck8fj")
+mesh = SubResource("PrismMesh_may0r")
+
+[node name="Roof_col" type="StaticBody3D" parent="EnvironmentGenerator/TestHouse/Roof" unique_id=1955109673]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/TestHouse/Roof/Roof_col" unique_id=1915977568]
+shape = SubResource("ConcavePolygonShape3D_m1i6t")
+
+[node name="Cube_0" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=1442622930]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.231827, 0.5, 14.43417)
+layers = 3
+material_override = SubResource("ShaderMaterial_kef2h")
+mesh = SubResource("BoxMesh_c6kpy")
+
+[node name="Cube_0_col" type="StaticBody3D" parent="EnvironmentGenerator/Cube_0" unique_id=971789461]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Cube_0/Cube_0_col" unique_id=71710443]
+shape = SubResource("ConcavePolygonShape3D_6pmkk")
+
+[node name="Cube_1" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=1672825087]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.282481, 0.5, -14.970657)
+layers = 3
+material_override = SubResource("ShaderMaterial_7dbxf")
+mesh = SubResource("BoxMesh_qoemy")
+
+[node name="Cube_1_col" type="StaticBody3D" parent="EnvironmentGenerator/Cube_1" unique_id=1639250157]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Cube_1/Cube_1_col" unique_id=240409724]
+shape = SubResource("ConcavePolygonShape3D_bn3mk")
+
+[node name="Cube_2" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=1253988521]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8839759, 0.5, 17.553898)
+layers = 3
+material_override = SubResource("ShaderMaterial_66xxb")
+mesh = SubResource("BoxMesh_pedin")
+
+[node name="Cube_2_col" type="StaticBody3D" parent="EnvironmentGenerator/Cube_2" unique_id=705043466]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Cube_2/Cube_2_col" unique_id=276210063]
+shape = SubResource("ConcavePolygonShape3D_dukhw")
+
+[node name="Cube_3" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=92021787]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.7017527, 0.5, 2.7793086)
+layers = 3
+material_override = SubResource("ShaderMaterial_pvuku")
+mesh = SubResource("BoxMesh_jwstm")
+
+[node name="Cube_3_col" type="StaticBody3D" parent="EnvironmentGenerator/Cube_3" unique_id=1770301310]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Cube_3/Cube_3_col" unique_id=2128381522]
+shape = SubResource("ConcavePolygonShape3D_nu74k")
+
+[node name="Cube_4" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=974756222]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.351955, 0.5, -1.7704799)
+layers = 3
+material_override = SubResource("ShaderMaterial_qshkc")
+mesh = SubResource("BoxMesh_x8rv7")
+
+[node name="Cube_4_col" type="StaticBody3D" parent="EnvironmentGenerator/Cube_4" unique_id=87107803]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Cube_4/Cube_4_col" unique_id=127946062]
+shape = SubResource("ConcavePolygonShape3D_775ty")
+
+[node name="Cube_5" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=689373003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5099545, 0.5, 1.4020512)
+layers = 3
+material_override = SubResource("ShaderMaterial_3nn3u")
+mesh = SubResource("BoxMesh_sxwn4")
+
+[node name="Cube_5_col" type="StaticBody3D" parent="EnvironmentGenerator/Cube_5" unique_id=890614728]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Cube_5/Cube_5_col" unique_id=1920127648]
+shape = SubResource("ConcavePolygonShape3D_bdhhl")
+
+[node name="Cube_6" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=745944644]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.46713, 0.5, -13.138985)
+layers = 3
+material_override = SubResource("ShaderMaterial_wvrs4")
+mesh = SubResource("BoxMesh_8i5a5")
+
+[node name="Cube_6_col" type="StaticBody3D" parent="EnvironmentGenerator/Cube_6" unique_id=1515449654]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Cube_6/Cube_6_col" unique_id=1403635992]
+shape = SubResource("ConcavePolygonShape3D_582a1")
+
+[node name="Cube_7" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=720575739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.119841, 0.5, 5.4095225)
+layers = 3
+material_override = SubResource("ShaderMaterial_qtv4r")
+mesh = SubResource("BoxMesh_drdrk")
+
+[node name="Cube_7_col" type="StaticBody3D" parent="EnvironmentGenerator/Cube_7" unique_id=1860656662]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Cube_7/Cube_7_col" unique_id=1754239554]
+shape = SubResource("ConcavePolygonShape3D_e83ov")
+
+[node name="Cube_8" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=1476471114]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.281629, 0.5, 19.030727)
+layers = 3
+material_override = SubResource("ShaderMaterial_jnocu")
+mesh = SubResource("BoxMesh_xrgsh")
+
+[node name="Cube_8_col" type="StaticBody3D" parent="EnvironmentGenerator/Cube_8" unique_id=1379728826]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Cube_8/Cube_8_col" unique_id=1105636916]
+shape = SubResource("ConcavePolygonShape3D_e0swk")
+
+[node name="Cube_9" type="MeshInstance3D" parent="EnvironmentGenerator" unique_id=1499694479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.7566645, 0.5, 15.019982)
+layers = 3
+material_override = SubResource("ShaderMaterial_cljr8")
+mesh = SubResource("BoxMesh_1w1f8")
+
+[node name="Cube_9_col" type="StaticBody3D" parent="EnvironmentGenerator/Cube_9" unique_id=615690647]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnvironmentGenerator/Cube_9/Cube_9_col" unique_id=1764426115]
+shape = SubResource("ConcavePolygonShape3D_hrivt")
+
 [node name="WeatherSystem" type="Node3D" parent="." unique_id=1585581140]
 
 [node name="DayNightCycle" type="Node" parent="WeatherSystem" unique_id=489395121 node_paths=PackedStringArray("sun_light")]
@@ -57,8 +440,16 @@ metadata/_custom_type_script = "uid://ctmfkjk0nwclb"
 [node name="WorldEnvironment" type="WorldEnvironment" parent="WeatherSystem/WeatherEnvironmentController" unique_id=278346066]
 environment = SubResource("Environment_pgar2")
 
-[node name="WeatherParticleController" parent="WeatherSystem" unique_id=1398429238 node_paths=PackedStringArray("target_camera") instance=ExtResource("3_wx682")]
-target_camera = NodePath("../../Camera3D")
+[node name="GlobalCollision" type="GPUParticlesCollisionHeightField3D" parent="WeatherSystem" unique_id=1848213680]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+size = Vector3(100, 50, 100)
+resolution = 1
+update_mode = 1
+follow_camera_enabled = true
+
+[node name="WeatherParticleController" parent="WeatherSystem/GlobalCollision" unique_id=1398429238 node_paths=PackedStringArray("target_camera") instance=ExtResource("3_wx682")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+target_camera = NodePath("../../../Camera3D")
 
 [node name="WeatherAudioManager" type="Node" parent="WeatherSystem" unique_id=1927020291]
 script = ExtResource("5_ha67f")
@@ -74,11 +465,8 @@ stream = ExtResource("10_wi60m")
 
 [node name="InteractiveObjects" type="Node3D" parent="." unique_id=1551820909]
 
-[node name="PuddleDecal" parent="InteractiveObjects" unique_id=1656443397 instance=ExtResource("8_majs8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9749458, 1, 1.841294)
-
 [node name="PhysicsCrate" type="RigidBody3D" parent="InteractiveObjects" unique_id=1019913568]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.298533, -7.0350447)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.485443, -7.0350447)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractiveObjects/PhysicsCrate" unique_id=1469708813]
 shape = SubResource("BoxShape3D_jo5he")
@@ -108,10 +496,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -54.5
+offset_top = -68.0
+offset_right = 54.5
+offset_bottom = 362.5
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_b4qg2")
@@ -131,3 +519,6 @@ text = "ButtonRain"
 [node name="ButtonSnow" type="Button" parent="CanvasLayer/Control/VBoxContainer" unique_id=1927991408]
 layout_mode = 2
 text = "ButtonSnow"
+
+[node name="SnowMapper" parent="." unique_id=696156062 node_paths=PackedStringArray("target_node") instance=ExtResource("12_3th4k")]
+target_node = NodePath("../Camera3D")

@@ -1,85 +1,96 @@
 extends Node3D
 class_name WeatherParticleController
 
-## Manages precipitation particles (Rain/Snow)
-## Attach this to a Node3D that holds your GPUParticles3D children
+## Manages precipitation particles dynamically based on node names.
+## Add GPUParticles3D children named exactly like the WeatherType (e.g., "Rain", "Snow", "Hail").
 
 @export var target_camera: Camera3D
 @export var follow_camera: bool = true
 
-# Child nodes (assign in editor or find dynamically)
-@onready var rain_particles: GPUParticles3D = $Rain
-@onready var snow_particles: GPUParticles3D = $Snow
-
-# Internal state
+# Dictionary mapping weather_type (String) -> GPUParticles3D node
+var _particle_systems: Dictionary = {}
 var _current_preset: WeatherPreset
 
 func _ready() -> void:
-	# Find camera if not assigned
 	if not target_camera:
 		target_camera = get_viewport().get_camera_3d()
+	
+	# 1. Dynamically register all GPUParticles3D children
+	for child in get_children():
+		if child is GPUParticles3D:
+			# The node name becomes the key (e.g., "Rain", "Snow", "Sandstorm")
+			_particle_systems[child.name] = child
+			print("WeatherParticleController: Registered system for '%s'" % child.name)
+			
+			# Ensure they start off
+			child.emitting = false
+			child.amount_ratio = 0.0
 
 func _process(delta: float) -> void:
 	_update_position()
 
-
-	# Check for weather updates
 	if WeatherManager.is_transitioning():
-		var from = WeatherManager.current_weather
-		var to = WeatherManager.get_target_weather()
-		var progress = WeatherManager.get_transition_progress()
-		_blend_particles(from, to, progress)
+		_blend_particles(
+			WeatherManager.current_weather, 
+			WeatherManager.get_target_weather(), 
+			WeatherManager.get_transition_progress()
+		)
 	elif WeatherManager.current_weather != _current_preset:
-		if WeatherManager.current_weather:
-			print("WeatherParticleController: New preset detected: ", WeatherManager.current_weather.weather_type)
-			_apply_preset(WeatherManager.current_weather)
-		else:
-			print("WeatherParticleController: Current weather is null!")
-
+		_apply_preset(WeatherManager.current_weather)
 
 func _update_position() -> void:
 	if not follow_camera or not target_camera:
 		return
-		
-	# Snap to camera position but keep global rotation aligned with up
 	global_position = target_camera.global_position
-	# Offset upwards so rain falls *past* the camera, not starting inside it
 	global_position.y += 10.0 
 
 func _apply_preset(preset: WeatherPreset) -> void:
+	if not preset: return
 	_current_preset = preset
-	# Basic switching logic - can be expanded
-	if preset.weather_type == "Rain" or preset.weather_type == "Thunderstorm":
-		rain_particles.emitting = true
-		snow_particles.emitting = false
-		rain_particles.amount_ratio = 1.0
-	elif preset.weather_type == "Snow":
-		rain_particles.emitting = false
-		snow_particles.emitting = true
-		snow_particles.amount_ratio = 1.0
-	else:
-		rain_particles.emitting = false
-		snow_particles.emitting = false
+	
+	var type = preset.weather_type
+	
+	# Loop through all registered systems
+	for sys_name in _particle_systems:
+		var particles = _particle_systems[sys_name]
+		
+		# Match logic: 
+		# 1. Exact match (e.g. Node "Rain" matches Preset "Rain")
+		# 2. Special case: "Thunderstorm" activates "Rain" if no "Thunderstorm" particles exist
+		var should_emit = (sys_name == type)
+		
+		if type == "Thunderstorm" and sys_name == "Rain":
+			should_emit = true
+		
+		if should_emit:
+			if not particles.emitting: particles.emitting = true
+			particles.amount_ratio = 1.0
+		else:
+			particles.emitting = false
+			particles.amount_ratio = 0.0
 
 func _blend_particles(from: WeatherPreset, to: WeatherPreset, t: float) -> void:
-	# Complex blending: crossfade amount_ratio
-	# This is a simplified approach. Ideally, you modulate transparency/amount.
+	var from_type = from.weather_type if from else ""
+	var to_type = to.weather_type if to else ""
 	
-	var is_raining_to = (to.weather_type in ["Rain", "Thunderstorm"])
-	var is_snowing_to = (to.weather_type == "Snow")
-	
-	# Rain Logic
-	if is_raining_to:
-		if not rain_particles.emitting: rain_particles.emitting = true
-		rain_particles.amount_ratio = t
-	elif rain_particles.emitting:
-		rain_particles.amount_ratio = 1.0 - t
-		if t >= 0.99: rain_particles.emitting = false
+	for sys_name in _particle_systems:
+		var particles = _particle_systems[sys_name]
 		
-	# Snow Logic
-	if is_snowing_to:
-		if not snow_particles.emitting: snow_particles.emitting = true
-		snow_particles.amount_ratio = t
-	elif snow_particles.emitting:
-		snow_particles.amount_ratio = 1.0 - t
-		if t >= 0.99: snow_particles.emitting = false
+		# Determine if this system is active in 'from' or 'to' states
+		var active_in_from = (sys_name == from_type) or (from_type == "Thunderstorm" and sys_name == "Rain")
+		var active_in_to = (sys_name == to_type) or (to_type == "Thunderstorm" and sys_name == "Rain")
+		
+		if active_in_to and not active_in_from:
+			# Fading IN
+			if not particles.emitting: particles.emitting = true
+			particles.amount_ratio = t
+		elif active_in_from and not active_in_to:
+			# Fading OUT
+			particles.amount_ratio = 1.0 - t
+			if t >= 0.99: particles.emitting = false
+		elif active_in_to and active_in_from:
+			# Staying ON
+			particles.amount_ratio = 1.0
+		else:
+			# Staying OFF
+			particles.emitting = false
